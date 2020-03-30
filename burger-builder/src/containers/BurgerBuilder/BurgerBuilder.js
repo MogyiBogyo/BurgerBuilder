@@ -3,11 +3,11 @@ import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
-import OrderSummary from '../../components/Burger/OrderSummaty/OrderSummary';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import { number } from 'prop-types';
+
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -22,7 +22,8 @@ class BurgerBuilder extends Component {
         totalPrice: 4,
         purchasable: false,
         purchasing: false,
-        loading: false
+        loading: false,
+        error: false
     }
 
 
@@ -30,6 +31,8 @@ class BurgerBuilder extends Component {
         axios.get('https://burgerbuilder-b226a.firebaseio.com/ingredients.json')
             .then(response => {
                 this.setState({ ingredients: response.data });
+            }).catch(error => {
+                this.setState({error: true});
             });
     }
 
@@ -120,7 +123,7 @@ class BurgerBuilder extends Component {
 
 
         let orderSummary = null;
-        let burger = <Spinner />
+        let burger =this.state.error? <p>Ingredients can't be loded</p> : <Spinner />;
         if (this.state.ingredients) {
             burger = (
                 <Auxiliary>
